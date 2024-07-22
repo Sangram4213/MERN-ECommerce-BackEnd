@@ -14,6 +14,8 @@ connectDB();
 
 const app = express();
 
+app.use(express.json()); // Automatically parsed JSON
+
 app.get("/",(req,res)=>{
     res.send("API working with /api/v1");
 })
