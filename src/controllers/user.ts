@@ -38,6 +38,35 @@ export const newUser = TryCatch(
   }
 );
 
-export const getAllUsers = ()=>{
+export const getAllUsers = TryCatch(async (req, res, next) => {
+  const users = await User.find({});
+  return res.status(200).json({
+    success: true,
+    users,
+  });
+});
 
-};
+export const getUser = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (user)
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+
+  return next(new ErrorHandler("User is not found", 404));
+});
+
+export const deleteUser = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) return next(new ErrorHandler("User is not found", 404));
+
+  await User.findByIdAndDelete(req.params.id);
+  
+  return res.status(200).json({
+    success: true,
+    message: `User ${user.name} detailed is deleted`,
+  });
+});
