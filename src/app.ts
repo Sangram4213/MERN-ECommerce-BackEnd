@@ -1,6 +1,6 @@
 import express from "express";
 import morgan from "morgan";
-import logger from "./middlewares/logger.js"
+import logger from "./utils/logger.js"
 
 import { connectDB } from "./utils/features.js";
 import { errorMidleware } from "./middlewares/error.js";
