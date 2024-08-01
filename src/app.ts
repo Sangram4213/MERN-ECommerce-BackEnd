@@ -7,6 +7,8 @@ import NodeCache from "node-cache";
 //Importing Routes
 import userRoutes from './routes/user.js';
 import productRoutes from './routes/product.js';
+import orderRoutes from './routes/order.js';
+
 
 const port = 4000;
 
@@ -25,6 +27,7 @@ app.get("/",(req,res)=>{
 //Using Routes
 app.use('/api/v1/user',userRoutes);
 app.use('/api/v1/product',productRoutes);
+app.use('/api/v1/order',orderRoutes);
 
 app.use("/uploads",express.static("uploads"));
 app.use(errorMidleware);
