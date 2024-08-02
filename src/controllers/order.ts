@@ -59,3 +59,20 @@ export const myOrders = TryCatch(async(req,res,next)=>{
       orders,
    })
 })
+
+export const allOrders = TryCatch(async(req,res,next)=>{
+   let orders;
+   
+   if(myCache.has("all-orders")) orders = JSON.parse(myCache.get("all-orders") as string);
+   else {
+      orders = await Order.find({});
+      myCache.set("all-orders",JSON.stringify(orders));
+   }
+
+   if(!orders) return next(new ErrorHandler("Order is not exist",404));
+
+   res.status(200).json({
+      success:true,
+      orders,
+   })
+})
