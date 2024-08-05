@@ -42,15 +42,13 @@ export const applyDiscount = TryCatch(async (req, res, next) => {
     
     const {id} = req.params;
 
-    const coupon = await Coupon.findById(id);
+    const coupon = await Coupon.findByIdAndDelete(id);
 
     if(!coupon) return next(new ErrorHandler("Coupons not exist",404));  
 
-    await coupon.deleteOne();
-
     res.status(200).json({
       success:true,
-      message:"Coupon Deleted"
+      message:`Coupon ${coupon.code} Deleted`
     });
   });
 
