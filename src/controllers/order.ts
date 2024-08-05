@@ -11,8 +11,7 @@ export const myOrders = TryCatch(async (req, res, next) => {
   const key = `my-orders-${user}`;
   let orders;
 
-  if (myCache.has(key))
-    orders = JSON.parse(myCache.get(key) as string);
+  if (myCache.has(key)) orders = JSON.parse(myCache.get(key) as string);
   else {
     orders = await Order.find({ user });
     myCache.set(key, JSON.stringify(orders));
@@ -28,9 +27,8 @@ export const myOrders = TryCatch(async (req, res, next) => {
 
 export const allOrders = TryCatch(async (req, res, next) => {
   let orders;
-  const key = "all-orders"
-  if (myCache.has(key))
-    orders = JSON.parse(myCache.get(key) as string);
+  const key = "all-orders";
+  if (myCache.has(key)) orders = JSON.parse(myCache.get(key) as string);
   else {
     orders = await Order.find({}).populate("user", "name");
     if (!orders) return next(new ErrorHandler("Order is not exist", 404));
@@ -44,22 +42,22 @@ export const allOrders = TryCatch(async (req, res, next) => {
 });
 
 export const getSingleOrder = TryCatch(async (req, res, next) => {
-   const { id } = req.params;
-   const key = `order-${id}`;
-   let order;
- 
-   if (myCache.has(key)) order = JSON.parse(myCache.get(key) as string);
-   else {
-     order = await Order.findById(id).populate("user", "name");
-     if (!order) return next(new ErrorHandler("Order is not exist", 404));
-     myCache.set(key, JSON.stringify(order));
-   }
- 
-   res.status(200).json({
-     success: true,
-     order,
-   });
- });
+  const { id } = req.params;
+  const key = `order-${id}`;
+  let order;
+
+  if (myCache.has(key)) order = JSON.parse(myCache.get(key) as string);
+  else {
+    order = await Order.findById(id).populate("user", "name");
+    if (!order) return next(new ErrorHandler("Order is not exist", 404));
+    myCache.set(key, JSON.stringify(order));
+  }
+
+  res.status(200).json({
+    success: true,
+    order,
+  });
+});
 export const newOrder = TryCatch(
   async (req: Request<{}, {}, NewOrderRequestBody>, res, next) => {
     const {
@@ -75,7 +73,7 @@ export const newOrder = TryCatch(
 
     if (!shippingInfo || !orderItems || !user || !subtotal || !tax || !total)
       return next(new ErrorHandler("Please Enter All Feild", 400));
-    await Order.create({
+   const order = await Order.create({
       shippingInfo,
       orderItems,
       user,
@@ -87,7 +85,13 @@ export const newOrder = TryCatch(
     });
 
     await reduceStock(orderItems);
-    await invalidateCache({ product: true, order: true, admin: true,userId:user });
+    await invalidateCache({
+      product: true,
+      order: true,
+      admin: true,
+      userId: user,
+      productId:order.orderItems.map(i=>String(i.productId))
+    });
 
     return res.status(201).json({
       success: true,
@@ -116,7 +120,13 @@ export const processOrder = TryCatch(async (req, res, next) => {
 
   await order.save();
 
-  invalidateCache({ product: false, order: true, admin: true, userId:order.user });
+  invalidateCache({
+    product: false,
+    order: true,
+    admin: true,
+    userId: order.user,
+    orderId: String(order._id),
+  });
   return res.status(200).json({
     success: true,
     message: `Order status changed to ${order.status}`,
@@ -124,16 +134,21 @@ export const processOrder = TryCatch(async (req, res, next) => {
 });
 
 export const deleteOrder = TryCatch(async (req, res, next) => {
-   const { id } = req.params;
- 
-   const order = await Order.findById(id);
-   if (!order) return next(new ErrorHandler("Order is not Found", 404));
-   await order.deleteOne();
- 
-   invalidateCache({ product: false, order: true, admin: true,userId:order.user });
-   return res.status(200).json({
-     success: true,
-     message: "Order Deleted",
-   });
- });
- 
+  const { id } = req.params;
+
+  const order = await Order.findById(id);
+  if (!order) return next(new ErrorHandler("Order is not Found", 404));
+  await order.deleteOne();
+
+  invalidateCache({
+    product: false,
+    order: true,
+    admin: true,
+    userId: order.user,
+    orderId: String(order._id),
+  });
+  return res.status(200).json({
+    success: true,
+    message: "Order Deleted",
+  });
+});

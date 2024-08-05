@@ -13,8 +13,7 @@ app.get("/my",myOrders);
 //To get all orders -/api/v1/order/new
 app.get("/all",adminOnly,allOrders);
 
-app.route("/:id").get(getSingleOrder).delete(adminOnly,deleteOrder);
+app.route("/:id").get(getSingleOrder).delete(adminOnly,deleteOrder).put(adminOnly,processOrder);
 
-app.get("/process-order/:id",adminOnly,processOrder);
 
 export default app;

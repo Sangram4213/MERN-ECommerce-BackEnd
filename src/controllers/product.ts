@@ -91,7 +91,7 @@ export const deleteSingleProduct = TryCatch(async (req, res, next) => {
   });
   await Product.findByIdAndDelete(req.params.id);
 
-  await invalidateCache({ product: true });
+  await invalidateCache({ product: true,productId:String(product._id) });
 
   return res.status(200).json({
     success: true,
@@ -112,7 +112,7 @@ export const newProduct = TryCatch(
       });
       return next(new ErrorHandler("Pkease Add Enter All Feild", 400));
     }
-    await Product.create({
+    const product=await Product.create({
       name,
       category: category.toLowerCase(),
       stock,
@@ -120,7 +120,7 @@ export const newProduct = TryCatch(
       photo: photo.path,
     });
 
-    await invalidateCache({ product: true });
+    await invalidateCache({ product: true,productId:String(product._id) });
 
     return res.status(201).json({
       success: true,
@@ -150,7 +150,7 @@ export const updateProduct = TryCatch(async (req, res, next) => {
 
   await product.save();
 
-  await invalidateCache({ product: true });
+  await invalidateCache({ product: true,productId:String(product._id) });
 
   return res.status(200).json({
     success: true,
