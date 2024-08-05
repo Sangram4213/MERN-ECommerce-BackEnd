@@ -26,3 +26,31 @@ export const applyDiscount = TryCatch(async (req, res, next) => {
       discount:discount.amount,
     });
   });
+
+  export const getAllCoupon = TryCatch(async (req, res, next) => {
+    
+    const coupons = await Coupon.find({});
+
+    if(!coupons) return next(new ErrorHandler("Coupons not exist",404));  
+    res.status(200).json({
+      success:true,
+      coupons
+    });
+  });
+
+  export const deleteCoupon = TryCatch(async (req, res, next) => {
+    
+    const {id} = req.params;
+
+    const coupon = await Coupon.findById(id);
+
+    if(!coupon) return next(new ErrorHandler("Coupons not exist",404));  
+
+    await coupon.deleteOne();
+
+    res.status(200).json({
+      success:true,
+      message:"Coupon Deleted"
+    });
+  });
+
