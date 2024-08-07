@@ -54,7 +54,7 @@ app.use('/api/v1/user',userRoutes);
 app.use('/api/v1/product',productRoutes);
 app.use('/api/v1/order',orderRoutes);
 app.use('/api/v1/payment',paymentRoutes);
-app.use('/api/v1/stats',dashboardRoute);
+app.use('/api/v1/dashboard',dashboardRoute);
 
 app.use("/uploads",express.static("uploads"));
 app.use(errorMidleware);

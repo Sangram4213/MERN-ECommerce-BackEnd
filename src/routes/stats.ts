@@ -5,7 +5,7 @@ import { adminOnly } from '../middlewares/auth.js';
 const app = express();
 
 //route - /api/v1/dashboard/stats
-app.post('/stats',adminOnly,getDashboardStats);
+app.get('/stats',adminOnly,getDashboardStats);
 
 //route - /api/v1/dashboard/pie
 app.post('/pie',adminOnly,getPieChart);
