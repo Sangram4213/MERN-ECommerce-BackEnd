@@ -8,13 +8,13 @@ const app = express();
 app.get('/stats',adminOnly,getDashboardStats);
 
 //route - /api/v1/dashboard/pie
-app.post('/pie',adminOnly,getPieChart);
+app.get('/pie',adminOnly,getPieChart);
 
 //route - /api/v1/dashboard/bar
-app.post('/bar',adminOnly,getBarChart);
+app.get('/bar',adminOnly,getBarChart);
 
 //route - /api/v1/dashboard/line
-app.post('/line',adminOnly,getLineChart);
+app.get('/line',adminOnly,getLineChart);
 
 
 export default app;
