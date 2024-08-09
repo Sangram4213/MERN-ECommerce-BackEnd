@@ -1,9 +1,13 @@
 import express from 'express';
-import { applyDiscount, deleteCoupon, getAllCoupon, newCoupon } from '../controllers/payment.js';
+import { applyDiscount, createPaymentIntent, deleteCoupon, getAllCoupon, newCoupon } from '../controllers/payment.js';
 import { adminOnly } from '../middlewares/auth.js';
+import { createPath } from 'react-router-dom';
 
 
 const app = express();
+
+//route- /api/v1/payment/create
+app.get('/create',createPaymentIntent);
 
 //route- /api/v1/payment/coupon/new
 app.post('/coupon/new',adminOnly,newCoupon);
