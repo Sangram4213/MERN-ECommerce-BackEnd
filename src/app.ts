@@ -7,6 +7,8 @@ import { errorMidleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
 import { config } from "dotenv";
 import { Cashfree } from "cashfree-pg";
+import cors from 'cors';
+
 //Importing Routes
 import userRoutes from './routes/user.js';
 import productRoutes from './routes/product.js';
