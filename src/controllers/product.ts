@@ -28,6 +28,8 @@ export const getlatestProducts = TryCatch(async (req, res, next) => {
     myCache.set("latest-product", JSON.stringify(products));
   }
 
+  
+
   return res.status(200).json({
     success: true,
     products,

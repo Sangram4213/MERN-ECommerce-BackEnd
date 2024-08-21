@@ -18,7 +18,7 @@ app.get("/latest",getlatestProducts);
 app.get("/category", getAllCategories);
 
 //To get all unioque category -/api/v1/product/admin-products
-app.get("/admin-products",getAdminProducts);
+app.get("/admin-products",adminOnly,getAdminProducts);
 
 app.route("/:id").get(getSingleProduct).delete(adminOnly,deleteSingleProduct).put(adminOnly,singleUpload,updateProduct);
 
