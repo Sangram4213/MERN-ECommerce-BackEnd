@@ -112,7 +112,7 @@ export const newProduct = TryCatch(
       rm(photo.path, () => {
         console.log("Deleted!");
       });
-      return next(new ErrorHandler("Pkease Add Enter All Feild", 400));
+      return next(new ErrorHandler("Please Add Enter All Feild", 400));
     }
     const product=await Product.create({
       name,
