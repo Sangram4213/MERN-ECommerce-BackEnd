@@ -4,6 +4,7 @@ import { myCache } from "../app.js";
 import { Product } from "../models/product.js";
 import { Order } from "../models/order.js";
 import { Date } from "firebase/vertexai-preview";
+import crypto from 'crypto'
 
 export const connectDB = (uri: string) => {
   mongoose
@@ -126,3 +127,14 @@ export const getChartData = ({
 
   return data;
 };
+
+export const generateOrderId=()=> {
+  const uniqueId = crypto.randomBytes(16).toString('hex');
+
+  const hash = crypto.createHash('sha256');
+  hash.update(uniqueId);
+
+  const orderId = hash.digest('hex');
+
+  return orderId.substr(0, 12);
+}

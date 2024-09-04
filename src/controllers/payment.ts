@@ -1,30 +1,54 @@
 import { TryCatch } from "../middlewares/error.js";
 import { Coupon } from "../models/coupon.js";
+import { generateOrderId } from "../utils/features.js";
 import ErrorHandler from "../utils/utility-class.js";
-import {Cashfree} from 'cashfree-pg';
+import { Cashfree } from "cashfree-pg";
 
 export const createPaymentIntent = TryCatch(async (req, res, next) => {
-  var request:any = {
-    "order_amount": "1",
-    "order_currency": "INR",
-    "customer_details": {
-      "customer_id": "node_sdk_test",
-      "customer_name": "",
-      "customer_email": "example@gmail.com",
-      "customer_phone": "9999999999"
-    }
-  }
-  
+  const { name, id, amount, email } = req.params;
+  let request: any = {
+    order_amount: amount,
+    order_currency: "INR",
+    order_id: generateOrderId(),
+    customer_details: {
+      customer_id: "node_sdk_test",
+      customer_name: name,
+      customer_email: email,
+      customer_phone: "9999999999",
+    },
+  };
+
   const response = await Cashfree.PGCreateOrder("2023-08-01", request);
 
   if (!response) {
     return next(new ErrorHandler("Error during payment", 404));
   }
-  
+
+  console.log(response.data.order_id);
+
   res.status(200).json({
-    success:true,
-    response:response.data
-  })
+    success: true,
+    response:{
+      paymentSessionId: response.data?.payment_session_id,
+      orderId:response.data.order_id
+    }
+  });
+});
+
+export const verifyPayment = TryCatch(async (req, res, next) => {
+  try {
+    let { orderId } = req.body;
+
+    Cashfree.PGOrderFetchPayments("2023-08-01", orderId)
+      .then((response) => {
+        res.json(response.status);
+      })
+      .catch((error) => {
+        console.error(error.response.data.message);
+      });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 export const newCoupon = TryCatch(async (req, res, next) => {
