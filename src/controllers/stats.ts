@@ -148,12 +148,12 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
     };
 
     const orderMonthsCounts = getChartData({
-      length: 12,
+      length: 6,
       today,
       docArr: lastSixMonthOrders,
     });
     const orderMonthsRevenue = getChartData({
-      length: 12,
+      length: 6,
       today,
       docArr: lastSixMonthOrders,
       property: "total",
