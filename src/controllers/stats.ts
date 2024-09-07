@@ -147,17 +147,8 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       order: allOrders.length,
     };
 
-    const orderMonthsCounts = getChartData({
-      length: 6,
-      today,
-      docArr: lastSixMonthOrders,
-    });
-    const orderMonthsRevenue = getChartData({
-      length: 6,
-      today,
-      docArr: lastSixMonthOrders,
-      property: "total",
-    });
+    const orderMonthsCounts = new Array(6).fill(0);
+    const orderMonthsRevenue = new Array(6).fill(0);
 
     const categoryCount = await getInventories({
       categories,
