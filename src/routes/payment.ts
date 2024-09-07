@@ -1,8 +1,6 @@
 import express from 'express';
 import { applyDiscount, createPaymentIntent, deleteCoupon, getAllCoupon, newCoupon, verifyPayment } from '../controllers/payment.js';
 import { adminOnly } from '../middlewares/auth.js';
-import { createPath } from 'react-router-dom';
-
 
 const app = express();
 

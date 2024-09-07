@@ -112,9 +112,10 @@ export const getChartData = ({
 }: FuncProps) => {
   const data: number[] = new Array(length).fill(0);
 
-  docArr.forEach((i) => {
+  docArr.forEach((i:any) => {
     const creationDate = i.createdAt;
-    const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
+    let monthDiff
+   monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
 
     if (monthDiff < length) {
       if (property && i[property] !== undefined) {
