@@ -99,7 +99,7 @@ interface MyDocument extends Document {
 }
 type FuncProps = {
   length: number;
-  docArr: MyDocument[];
+  docArr: any;
   today: Date;
   property?: "discount" | "total";
 };
@@ -117,8 +117,8 @@ export const getChartData = ({
     const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
 
     if (monthDiff < length) {
-      if (property) {
-        data[length - monthDiff - 1] += i[property]!;
+      if (property && i[property] !== undefined) {
+        data[length - monthDiff - 1] += i[property] as number; // Safely cast to number
       } else {
         data[length - monthDiff - 1] += 1;
       }
@@ -127,6 +127,7 @@ export const getChartData = ({
 
   return data;
 };
+
 
 export const generateOrderId=()=> {
   const uniqueId = crypto.randomBytes(16).toString('hex');

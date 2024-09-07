@@ -310,6 +310,12 @@ export const getBarChart = TryCatch(async (req, res, next) => {
   else {
     const today = new Date();
 
+    const todayObj = {
+      year: today.getFullYear(),
+      month: today.getMonth() + 1, // getMonth() returns 0-indexed months
+      day: today.getDate(),
+    };
+
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
@@ -343,11 +349,11 @@ export const getBarChart = TryCatch(async (req, res, next) => {
       twelveMonthsOrderPromise,
     ]);
 
-    const productCounts = getChartData({ length: 6, today, docArr: products });
+    const productCounts = getChartData({ length: 6, today:todayObj, docArr: products });
 
-    const userCounts = getChartData({ length: 6, today, docArr: users });
+    const userCounts = getChartData({ length: 6, today:todayObj, docArr: users });
 
-    const orderCounts = getChartData({ length: 12, today, docArr: orders });
+    const orderCounts = getChartData({ length: 12, today:todayObj, docArr: orders });
 
     charts = {
       products: productCounts,
@@ -399,20 +405,26 @@ export const getLineChart = TryCatch(async (req, res, next) => {
       twelveMonthsUsersPromise,
     ]);
 
-    const productCounts = getChartData({ length: 12, today, docArr: products });
+    const todayObj = {
+      year: today.getFullYear(),
+      month: today.getMonth() + 1, // getMonth() returns 0-indexed months
+      day: today.getDate(),
+    };
 
-    const userCounts = getChartData({ length: 12, today, docArr: users });
+    const productCounts = getChartData({ length: 12, today:todayObj, docArr: products });
+
+    const userCounts = getChartData({ length: 12, today:todayObj, docArr: users });
 
     const discount = getChartData({
       length: 12,
-      today,
+      today:todayObj,
       docArr: orders,
       property: "discount",
     });
 
     const revenue = getChartData({
       length: 12,
-      today,
+      today:todayObj,
       docArr: orders,
       property: "total",
     });
