@@ -7,8 +7,14 @@ const schema = new mongoose.Schema(
       required: [true, "Please Enter Name"],
     },
     photo: {
-        type: String,
-        required: [true, "Please Upload Photo"],
+        public_id:{
+          type:String,
+          required:true
+        },
+        url:{
+          type:String,
+          required:true
+        }
       },
       price: {
         type: Number,

@@ -17,7 +17,10 @@ export type ControllerType = (
 
 export interface NewProductRequestBody {
   name: string;
-  photo:string,
+  photo:{
+    public_id:string,
+    url:string
+  },
   price:number,
   stock:number,
   category:string

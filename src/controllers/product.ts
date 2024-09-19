@@ -10,6 +10,8 @@ import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
 import { myCache } from "../app.js";
 import { invalidateCache } from "../utils/features.js";
+import { getDataUri } from "../utils/dataUri.js";
+import cloudinary from "cloudinary";
 
 // import {faker} from '@faker-js/faker';
 
@@ -88,9 +90,6 @@ export const deleteSingleProduct = TryCatch(async (req, res, next) => {
 
   if (!product) return next(new ErrorHandler("Product is not exist", 404));
 
-  rm(product.photo!, () => {
-    console.log("Product photo deleted");
-  });
   await Product.findByIdAndDelete(req.params.id);
 
   invalidateCache({ product: true,productId:String(product._id),admin:true });
@@ -105,13 +104,14 @@ export const newProduct = TryCatch(
   async (req: Request<{}, {}, NewProductRequestBody>, res, next) => {
     const { name, category, stock, price } = req.body;
     const photo = req.file;
-
+    
     if (!photo) return next(new ErrorHandler("Please Add Photo", 400));
 
+    const photoUri = getDataUri(photo!);
+
+    const myCloud = await cloudinary.v2.uploader.upload(photoUri.content!);
+
     if (!name || !category || !stock || !price) {
-      rm(photo.path, () => {
-        console.log("Deleted!");
-      });
       return next(new ErrorHandler("Please Add Enter All Feild", 400));
     }
     const product=await Product.create({
@@ -119,7 +119,10 @@ export const newProduct = TryCatch(
       category: category.toLowerCase(),
       stock,
       price,
-      photo: photo.path,
+      photo: {
+        public_id: myCloud.public_id,
+        url:myCloud.secure_url
+      },
     });
 
     invalidateCache({ product: true,productId:String(product._id),admin:true });
@@ -140,10 +143,13 @@ export const updateProduct = TryCatch(async (req, res, next) => {
   if (!product) return next(new ErrorHandler("Product is not exist", 404));
 
   if (photo) {
-    rm(product.photo!, () => {
-      console.log("Old Photo Deleted");
-    });
-    product.photo = photo.path;
+    const photoUri = getDataUri(photo!);
+    const myCloud = await cloudinary.v2.uploader.upload(photoUri.content!);
+
+    if(product?.photo){
+      product?.photo?.public_id!=myCloud.public_id;
+      product?.photo?.url!=myCloud.secure_url;
+    }
   }
   if (name) product.name = name;
   if (category) product.category = category;

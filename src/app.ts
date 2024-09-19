@@ -8,6 +8,8 @@ import NodeCache from "node-cache";
 import { config } from "dotenv";
 import { Cashfree } from "cashfree-pg";
 import cors from 'cors';
+import cloudinary from 'cloudinary';
+
 
 //Importing Routes
 import userRoutes from './routes/user.js';
@@ -28,6 +30,12 @@ Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY;
 Cashfree.XEnvironment = Cashfree.Environment.SANDBOX;
 
 connectDB(process.env.DB_URI || "");
+
+cloudinary.v2.config({
+  cloud_name:process.env.CLOUDINARY_CLIENT_NAME,
+  api_key:process.env.CLOUDINARY_CLIENT_API,
+  api_secret:process.env.CLOUDINARY_CLIENT_SECRET
+})
 
 export const myCache = new NodeCache();
 
