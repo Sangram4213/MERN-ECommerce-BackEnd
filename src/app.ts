@@ -77,7 +77,6 @@ app.use('/api/v1/order',orderRoutes);
 app.use('/api/v1/payment',paymentRoutes);
 app.use('/api/v1/dashboard',dashboardRoute);
 
-app.use("/uploads",express.static("uploads"));
 app.use(errorMidleware);
 
 app.listen(port,()=>{
