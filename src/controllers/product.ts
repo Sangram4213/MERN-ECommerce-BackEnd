@@ -90,6 +90,11 @@ export const deleteSingleProduct = TryCatch(async (req, res, next) => {
 
   if (!product) return next(new ErrorHandler("Product is not exist", 404));
 
+  const imgId = product?.photo?.public_id;
+  if(imgId){
+    await cloudinary.v2.uploader.destroy(imgId);
+  }
+
   await Product.findByIdAndDelete(req.params.id);
 
   invalidateCache({ product: true,productId:String(product._id),admin:true });
@@ -143,6 +148,11 @@ export const updateProduct = TryCatch(async (req, res, next) => {
   if (!product) return next(new ErrorHandler("Product is not exist", 404));
 
   if (photo) {
+
+    const imgId = product?.photo?.public_id;
+    if(imgId){
+      await cloudinary.v2.uploader.destroy(imgId);
+    }
     const photoUri = getDataUri(photo!);
     const myCloud = await cloudinary.v2.uploader.upload(photoUri.content!);
 
